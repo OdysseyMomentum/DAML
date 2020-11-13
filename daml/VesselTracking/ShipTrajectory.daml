@@ -1,0 +1,27 @@
+module VesselTracking.ShipTrajectory where
+import Data.Coordinates
+import Data.Direction
+
+template Alert with
+    stakeholders : [Party]
+    raisedBy : Party
+    subject : ShipTrajectory
+  where
+    signatory raisedBy
+    observer stakeholders
+
+template ShipTrajectory with
+    shipOwner: Party
+    observedBy: Party
+    shipName: Text
+    lastKnownPosition: Coordinates
+    heading: Direction
+  where
+    signatory observedBy
+    key (shipName, observedBy) : (Text, Party)
+    maintainer key._2
+
+    controller observedBy can
+        RaiseAlert : ContractId Alert  do
+            create $ Alert with stakeholders = []; raisedBy = observedBy; subject = this
+

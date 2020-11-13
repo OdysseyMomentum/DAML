@@ -1,0 +1,21 @@
+sdk-version: 1.7.0
+name: odyssey
+version: 1.0.0
+source: daml/Main.daml
+init-script: Main:setup
+parties:
+- US
+- Canada
+- China
+- Taiwan
+- Brasil
+- Portugal
+- Spain
+- UK
+- Commission
+dependencies:
+- daml-prim
+- daml-stdlib
+- daml-script
+sandbox-options: ["--ledgerid",  "odyssey-sandbox"]
+    

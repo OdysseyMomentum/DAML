@@ -1,0 +1,123 @@
+module Main where
+
+import Daml.Script
+import DA.Date
+import DA.Time
+
+import FishingQuota.FishingQuota()
+import DataManagement.Report (Report(..), ReportContent(..), Publication(..), PublicationData(..))
+import VesselTracking.ShipTrajectory()
+import Data.Coordinates
+
+template OperatorOrganisation with
+    operator : Party
+    participants: [Party]
+  where
+    signatory operator
+    observer participants
+    key operator : Party
+    maintainer key
+    controller operator can
+       Onboard : (ContractId OperatorOrganisation, ContractId Invite) with
+           participant : Party
+           userName: Text
+        do
+          invito <- create $ Invite with operator ; user = participant ; userName            
+          op <- create $ this with participants = participant :: participants
+          pure (op, invito)
+
+template Invite with
+    operator: Party
+    user: Party
+    userName: Text
+    
+  where
+    signatory operator
+    controller user can 
+        Subscribe : ContractId User do
+          create $ User with operator; user; userName
+
+template User with
+    operator: Party
+    user : Party
+    userName : Text
+  where
+    signatory operator, user
+    key user : Party
+    maintainer key
+    controller user can
+        nonconsuming SubmitReport: ContractId Report with 
+            content: ReportContent
+          do 
+            create $ Report with operator; reporter = user ; content
+
+setup: Script ()
+setup = do
+    let microsecondsInDay = 86400000000
+    commission <- allocatePartyWithHint "Commission" (PartyIdHint "Commission")
+    op <- commission `submit` createCmd OperatorOrganisation with operator = commission ; participants = []
+    us <- allocatePartyWithHint "USA" (PartyIdHint "USA")
+    uk <- allocatePartyWithHint "UK" (PartyIdHint "UK")
+    canada <- allocatePartyWithHint "Canada" (PartyIdHint "Canada")
+    brasil <- allocatePartyWithHint "Brasil" (PartyIdHint "Brasil")
+    china <- allocatePartyWithHint "China" (PartyIdHint "China")
+    taiwan <- allocatePartyWithHint "Taiwan" (PartyIdHint "Taiwan")
+    spain <- allocatePartyWithHint "Spain" (PartyIdHint "Spain")
+    portugal <- allocatePartyWithHint "Portugal" (PartyIdHint "Portugal")
+    (op1,inv1) <- commission `submit` exerciseCmd op $ Onboard with participant = us ; userName = "USA"
+    us `submit` exerciseCmd inv1 Subscribe
+    (op2, inv2) <- commission `submit` exerciseCmd op1 $ Onboard with participant = uk ; userName = "UK"
+    ukUser <- uk `submit` exerciseCmd inv2 Subscribe
+    (op3, inv3) <- commission `submit` exerciseCmd op2 $ Onboard with participant = canada ; userName = "Canada"
+    canUser <- canada `submit` exerciseCmd inv3 Subscribe
+    (op4, inv4) <- commission `submit` exerciseCmd op3 $ Onboard with participant = brasil ; userName = "Brasil"
+    brasilUser <- brasil `submit` exerciseCmd inv4 Subscribe
+    (op5, inv5) <- commission `submit` exerciseCmd op4 $ Onboard with participant = china ; userName = "China"
+    china `submit` exerciseCmd inv5 Subscribe
+    (op6, inv6)<- commission `submit` exerciseCmd op5 $ Onboard with participant = taiwan; userName = "Taiwan"
+    taiwan `submit` exerciseCmd inv6 Subscribe
+    (op7, inv7) <- commission `submit` exerciseCmd op6 $ Onboard with participant = spain ; userName = "Spain"
+    spUser <- spain `submit` exerciseCmd inv7 Subscribe
+    (op8, inv8) <- commission `submit` exerciseCmd op7 $ Onboard with participant =  portugal ; userName = "Portugal"
+    portugal `submit` exerciseCmd inv8 Subscribe
+    t <- getTime
+    brasil `submit` exerciseCmd brasilUser $ SubmitReport with
+                    content = ReportContent with 
+                        species = "ALB"
+                        caughtQty = 0.09
+                        area = ((Coordinates with lat = 30.0; long = -45.0), 10.0) 
+                        timestamp =  time (date 2020 Mar 15) 0 0 0
+                        duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
+    brasil `submit` exerciseCmd brasilUser $ SubmitReport with
+                    content = ReportContent with 
+                        species = "ALB"
+                        caughtQty = 11.95782
+                        area = ((Coordinates with lat = 30.0; long = -50.0), 10.0) 
+                        timestamp =  time (date 2020 Jun 3) 0 0 0 
+                        duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
+    
+    canada `submit` exerciseCmd canUser $ SubmitReport with
+                    content = ReportContent with 
+                        species = "ALB"
+                        caughtQty = 0.007373
+                        area = ((Coordinates with lat = 40.0; long = -65.0), 10.0) 
+                        timestamp =  time (date 2020 Jun 3) 0 0 0 
+                        duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
+
+    spain `submit` exerciseCmd spUser $ SubmitReport with
+                    content = ReportContent with 
+                        species = "ALB"
+                        caughtQty = 10.01248
+                        area = ((Coordinates with lat = 40.0; long = -50.0), 10.0) 
+                        timestamp =  time (date 2020 Jun 3) 0 0 0 
+                        duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
+    commission `submit` createCmd $ Publication with 
+                                        operator = commission 
+                                        observers = []  
+                                        content = PublicationData with 
+                                                      targetArea = ((Coordinates with lat = 40.0; long = -51.0), 10.0)
+                                                      totalAllowance = 100
+                                                      species = "ALB"
+                                                      timeLimit = time (date 2020 Dec 1) 0 0 0  
+
+    pure ()

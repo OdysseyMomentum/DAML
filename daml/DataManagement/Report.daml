@@ -1,0 +1,50 @@
+module DataManagement.Report where
+import DA.List
+import DA.Time
+import Data.Coordinates
+
+import FishingQuota.FishingQuota
+data ReportContent = ReportContent with
+    species: Text
+    caughtQty: Decimal
+    area: (Coordinates, Decimal)
+    timestamp: Time
+    duration: RelTime
+  deriving (Eq, Show)
+
+template Report with
+    reporter : Party
+    operator : Party
+    content: ReportContent
+ where
+   signatory reporter, operator
+   controller operator can
+         Check : ContractId Publication do
+             exerciseByKey @Publication operator AddObserver with obs = reporter
+         Reject : ContractId Publication do
+             exerciseByKey @Publication operator RemoveObserver with obs = reporter 
+
+data PublicationData = PublicationData with
+    targetArea : (Coordinates, Decimal)
+    totalAllowance : Int
+    species : Text
+    timeLimit : Time
+  deriving (Eq, Show)
+
+template Publication with
+    operator : Party
+    observers: [Party]
+    content : PublicationData
+  where
+    signatory operator
+    key (operator): Party
+    maintainer key
+    observer observers
+    controller operator can
+        AddObserver: ContractId Publication with obs : Party do
+            create this with observers = dedup $ obs :: observers
+        RemoveObserver: ContractId Publication with obs : Party do
+            create this with observers = observers \\ [obs]
+    choice RequestQuota: ContractId FishingQuotaRequest with requestor : Party 
+        controller requestor 
+           do create FishingQuotaRequest with operator; requestor ; species = content.species

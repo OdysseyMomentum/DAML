@@ -1,0 +1,6 @@
+module Data.Coordinates where
+
+data Coordinates = Coordinates with 
+       long: Decimal
+       lat: Decimal
+    deriving (Eq, Ord, Show)

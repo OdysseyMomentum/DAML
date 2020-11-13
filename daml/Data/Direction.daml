@@ -1,0 +1,3 @@
+module Data.Direction where
+
+data Direction = N | S | E | W | NE | NW | SE | SW deriving (Eq, Ord, Show)

@@ -1184,9 +1184,9 @@
 "@daml.js/odyssey@file:../daml.js/odyssey-1.0.0":
   version "1.7.0"
   dependencies:
-    "@daml.js/40f452260bef3f29dede136108fc08a88d5a5250310281067087da6f0baddff7" "file:../../../.cache/yarn/v6/npm-@daml-js-odyssey-1.7.0-10caa812-542f-49e0-983c-a5d2fd08ba3b-1605387468423/node_modules/@daml.js/40f452260bef3f29dede136108fc08a88d5a5250310281067087da6f0baddff7"
-    "@daml.js/733e38d36a2759688a4b2c4cec69d48e7b55ecc8dedc8067b815926c917a182a" "file:../../../.cache/yarn/v6/npm-@daml-js-odyssey-1.7.0-10caa812-542f-49e0-983c-a5d2fd08ba3b-1605387468423/node_modules/@daml.js/733e38d36a2759688a4b2c4cec69d48e7b55ecc8dedc8067b815926c917a182a"
-    "@daml.js/d14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662" "file:../../../.cache/yarn/v6/npm-@daml-js-odyssey-1.7.0-10caa812-542f-49e0-983c-a5d2fd08ba3b-1605387468423/node_modules/@daml.js/d14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662"
+    "@daml.js/40f452260bef3f29dede136108fc08a88d5a5250310281067087da6f0baddff7" "file:../../../.cache/yarn/v6/npm-@daml-js-odyssey-1.7.0-840c1715-4a98-4b8d-9272-04304ae8c32f-1605406595642/node_modules/@daml.js/40f452260bef3f29dede136108fc08a88d5a5250310281067087da6f0baddff7"
+    "@daml.js/733e38d36a2759688a4b2c4cec69d48e7b55ecc8dedc8067b815926c917a182a" "file:../../../.cache/yarn/v6/npm-@daml-js-odyssey-1.7.0-840c1715-4a98-4b8d-9272-04304ae8c32f-1605406595642/node_modules/@daml.js/733e38d36a2759688a4b2c4cec69d48e7b55ecc8dedc8067b815926c917a182a"
+    "@daml.js/d14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662" "file:../../../.cache/yarn/v6/npm-@daml-js-odyssey-1.7.0-840c1715-4a98-4b8d-9272-04304ae8c32f-1605406595642/node_modules/@daml.js/d14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662"
     "@daml/ledger" "1.7.0"
     "@daml/types" "1.7.0"
     "@mojotech/json-type-validation" "^3.1.0"

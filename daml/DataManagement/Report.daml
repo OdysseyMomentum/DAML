@@ -20,9 +20,9 @@ template Report with
    signatory reporter, operator
    controller operator can
          Check : ContractId Publication do
-             exerciseByKey @Publication operator AddObserver with obs = reporter
+            exerciseByKey @Publication (content.species, operator) AddObserver with obs = reporter
          Reject : ContractId Publication do
-             exerciseByKey @Publication operator RemoveObserver with obs = reporter 
+            exerciseByKey @Publication (content.species, operator) RemoveObserver with obs = reporter 
 
 data PublicationData = PublicationData with
     targetArea : (Coordinates, Decimal)
@@ -37,14 +37,15 @@ template Publication with
     content : PublicationData
   where
     signatory operator
-    key (operator): Party
-    maintainer key
+    key (content.species, operator): (Text, Party)
+    maintainer key._2
     observer observers
     controller operator can
         AddObserver: ContractId Publication with obs : Party do
             create this with observers = dedup $ obs :: observers
         RemoveObserver: ContractId Publication with obs : Party do
             create this with observers = observers \\ [obs]
-    choice RequestQuota: ContractId FishingQuotaRequest with requestor : Party 
+    nonconsuming choice RequestQuota: ContractId FishingQuotaRequest with requestor : Party 
         controller requestor 
-           do create FishingQuotaRequest with operator; requestor ; species = content.species
+           do 
+              create FishingQuotaRequest with operator; requestor ; species = content.species

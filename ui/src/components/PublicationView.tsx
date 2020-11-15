@@ -7,63 +7,52 @@ import MapView from './MapView';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { LatLngExpression } from 'leaflet';
 import { ContractId } from '@daml/types';
-import { checkServerIdentity } from 'tls';
 
-export type ReportModel = {
-    reporter: string
-    caughtQty: number
+export type PublicationModel = {
+    fish: string
+    timeLimit: string,
+    allowed: number
     areaCenterLong: number
     areaCenterLat: number
     areaRadius: number
-    fish: string
+    contractId: ContractId<DataManagement.Report.Publication>
 } 
 
-export type ReportViewModel = {
-    report : ReportModel
-    contractId: ContractId<DataManagement.Report.Report>
-}
+type Props = { publication: PublicationModel
+               username: string
+               request: (contractId: ContractId<DataManagement.Report.Publication>) => void
+             }
 
-type Props = {
-     reports: ReportViewModel[]
-     check: (cid: ContractId<DataManagement.Report.Report>) => void
-     reject: (cid: ContractId<DataManagement.Report.Report>) => void
+export const PublicationView: React.FC<Props> = ({publication, username, request}) => {
+    
+    let buttons = (<ui.Button basic color="green" onClick={() => request(publication.contractId)}>Request Quota</ui.Button>);
+    if(username == "Commission") {
+        buttons = (<></>);
     }
-
-export const ReportView: React.FC<Props> = ({reports, check, reject}) => {
-   
     return (
-        <ui.Container>
-            <ui.CardGroup>
-            {reports.map(r => {
-            return (<ui.Card>
+            <ui.Card>
                 <ui.CardContent>
                     <ui.CardHeader>
-                        {r.report.reporter}: ({r.report.areaCenterLat}, {r.report.areaCenterLong})
+                        {publication.fish}: ({publication.areaCenterLat}, {publication.areaCenterLong})
                     </ui.CardHeader>
                 </ui.CardContent>
                 <ui.CardContent>
                     <ui.Feed>
                         <ui.FeedEvent>
                             <ui.FeedLabel>
-                                {r.report.fish}
+                                {publication.fish}
                             </ui.FeedLabel>
                             <ui.FeedContent>
                                 <ui.FeedSummary>
-                                    Qty: {r.report.caughtQty}
+                                    Total Allowance: {publication.allowed}
                                 </ui.FeedSummary>
                             </ui.FeedContent>
                         </ui.FeedEvent>
                     </ui.Feed>
                 </ui.CardContent>
                 <ui.CardContent extra>
-                    <div className="ui two buttons">
-                    <ui.Button basic color="green" onClick={()=> check(r.contractId) }>Check</ui.Button>
-                    <ui.Button basic color="red" onClick={() => reject(r.contractId)}>Reject</ui.Button>
-                    </div>
+                    <div>{buttons}</div>
                 </ui.CardContent>
             </ui.Card>);
-            })}
-            </ui.CardGroup>
-        </ui.Container>
-    )
+    
 }

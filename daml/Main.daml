@@ -4,8 +4,8 @@ import Daml.Script
 import DA.Date
 import DA.Time
 
-import FishingQuota.FishingQuota()
-import DataManagement.Report (Report(..), ReportContent(..), Publication(..), PublicationData(..))
+import FishingQuota.FishingQuota(Issue(..))
+import DataManagement.Report (RequestQuota(..), Check(..), Report(..), ReportContent(..), Publication(..), PublicationData(..))
 import VesselTracking.ShipTrajectory()
 import Data.Coordinates
 
@@ -54,8 +54,11 @@ template User with
 setup: Script ()
 setup = do
     let microsecondsInDay = 86400000000
+    -- Create system operator commission
     commission <- allocatePartyWithHint "Commission" (PartyIdHint "Commission")
     op <- commission `submit` createCmd OperatorOrganisation with operator = commission ; participants = []
+
+    -- onboard countries as users
     us <- allocatePartyWithHint "USA" (PartyIdHint "USA")
     uk <- allocatePartyWithHint "UK" (PartyIdHint "UK")
     canada <- allocatePartyWithHint "Canada" (PartyIdHint "Canada")
@@ -80,7 +83,9 @@ setup = do
     spUser <- spain `submit` exerciseCmd inv7 Subscribe
     (op8, inv8) <- commission `submit` exerciseCmd op7 $ Onboard with participant =  portugal ; userName = "Portugal"
     portugal `submit` exerciseCmd inv8 Subscribe
+
     t <- getTime
+    -- submitting fishing reports
     brasil `submit` exerciseCmd brasilUser $ SubmitReport with
                     content = ReportContent with 
                         species = "ALB"
@@ -88,7 +93,7 @@ setup = do
                         area = ((Coordinates with lat = 30.0; long = -45.0), 10.0) 
                         timestamp =  time (date 2020 Mar 15) 0 0 0
                         duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
-    brasil `submit` exerciseCmd brasilUser $ SubmitReport with
+    brReport <- brasil `submit` exerciseCmd brasilUser $ SubmitReport with
                     content = ReportContent with 
                         species = "ALB"
                         caughtQty = 11.95782
@@ -104,14 +109,16 @@ setup = do
                         timestamp =  time (date 2020 Jun 3) 0 0 0 
                         duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
 
-    spain `submit` exerciseCmd spUser $ SubmitReport with
+    espReport <- spain `submit` exerciseCmd spUser $ SubmitReport with
                     content = ReportContent with 
                         species = "ALB"
                         caughtQty = 10.01248
                         area = ((Coordinates with lat = 40.0; long = -50.0), 10.0) 
                         timestamp =  time (date 2020 Jun 3) 0 0 0 
                         duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
-    commission `submit` createCmd $ Publication with 
+                        
+    -- commission prepares a ppublication about fishing opportunities
+    pub <- commission `submit` createCmd $ Publication with 
                                         operator = commission 
                                         observers = []  
                                         content = PublicationData with 
@@ -120,4 +127,14 @@ setup = do
                                                       species = "ALB"
                                                       timeLimit = time (date 2020 Dec 1) 0 0 0  
 
+    -- commission accepts report and by that reveals publication for the party 
+    commission `submit` exerciseCmd espReport Check
+    pub2 <- commission `submit` exerciseCmd brReport Check
+
+    -- the parties that see the opportunity request fising quota
+    qr <- spain `submit` exerciseCmd pub2 RequestQuota with requestor = spain
+    brasil `submit` exerciseCmd pub2 RequestQuota with requestor = brasil
+    
+    -- commission issues a quota
+    commission `submit` exerciseCmd qr Issue
     pure ()

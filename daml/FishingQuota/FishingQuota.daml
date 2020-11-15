@@ -1,16 +1,5 @@
 module FishingQuota.FishingQuota where
 
-template FishingQuotaIssue with
-    issuer : Party
-    recipient: Party
-    species: Text
-    quantity: Decimal
-  where
-    signatory issuer
-    controller recipient can
-        Accept : ContractId FishingQuota do
-            create FishingQuota with issuer = issuer ; owner = recipient; quantity = quantity; species = species
-
 template FishingQuota with
     owner : Party
     issuer: Party

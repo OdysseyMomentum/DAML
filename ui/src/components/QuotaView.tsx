@@ -1,25 +1,12 @@
-import { Data, DataManagement, Main } from '@daml.js/odyssey';
-import { useLedger, useParty } from '@daml/react';
-import React, { useMemo, useState, useRef, useEffect } from 'react';
+import React from 'react';
 import * as ui from 'semantic-ui-react';
-import MapView from './MapView';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import { LatLngExpression } from 'leaflet';
-import { ReportView, ReportModel, ReportViewModel } from './ReportView';
-import { ReportForm } from './ReportForm';
-import { formatDiagnosticsWithColorAndContext } from 'typescript';
 import { ContractId } from '@daml/types';
-import { Report } from '@daml.js/odyssey/lib/DataManagement/Report';
-import { PublicationModel, PublicationView } from './PublicationView';
-import { FishingQuotaRequest, Issue } from '@daml.js/odyssey/lib/FishingQuota/FishingQuota';
+import { FishingQuotaRequest } from '@daml.js/odyssey/lib/FishingQuota/FishingQuota';
 
 export type QuotaRequestModel = {
-    // qty: number
     fish: string
     requestor: string
     contractId: ContractId<FishingQuotaRequest>
-    // areaLat: number
-    // areaLong: number
 }
 
 export type QuotaModel = {

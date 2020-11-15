@@ -19,27 +19,30 @@ const MainView: React.FC = () => {
 
     let [reports, setReports] = useState<ReportViewModel[]>([]);
 
+    let [update, setUpdated] = useState<Boolean>(false);
+
     let [publications, setPublications] = useState<PublicationModel[]>([]);
 
     let [quotaRequests, setQuotaRequsts] = useState<QuotaRequestModel[]>([]);
 
     let [quotas, setQuotas] = useState<QuotaModel[]>([]);
 
-    let reportQ = useQuery(DataManagement.Report.Report)
-    let pubQ = useQuery(DataManagement.Report.Publication)
-    let quotaRequestQ = useQuery(FishingQuota.FishingQuota.FishingQuotaRequest);
-    let quotaQ = useQuery(FishingQuota.FishingQuota.FishingQuota)
+    let reportQ = useQuery(DataManagement.Report.Report, () => {return  {operator: "Commission"}}, [ledger, update])
+    let pubQ = useQuery(DataManagement.Report.Publication, () => {return  {operator: "Commission"}}, [ledger, update])
+    let quotaRequestQ = useQuery(FishingQuota.FishingQuota.FishingQuotaRequest, () => {return  {operator: "Commission"}}, [ledger, update]);
+    let quotaQ = useQuery(FishingQuota.FishingQuota.FishingQuota, () => {return  {issuer: "Commission"}}, [ledger, update])
 
     useEffect(() => {
         setReports(reportQ.contracts.map(x => reportModelFromReport(x.contractId, x.payload)));
         setPublications(pubQ.contracts.map(x => publicationModelFromContract(x.contractId, x.payload)));
         setQuotaRequsts(quotaRequestQ.contracts.map(x => quotaRequestModelFromContract(x.contractId, x.payload)));
         setQuotas(quotaQ.contracts.map(x => quotaModelFromContract(x.contractId, x.payload)));
-    }, [ledger, reportQ, pubQ, quotaRequestQ, quotaQ])
+        setUpdated(false);
+    }, [reportQ, pubQ, quotaRequestQ, quotaQ, update])
 
-    let createReport = function (r: ReportModel) {
+    let createReport = async function (r: ReportModel) {
         try {
-            ledger.fetchByKey(Main.User, username).then(user => {
+            await ledger.fetchByKey(Main.User, username).then(user => {
                 if (user) {
                     ledger.exercise(Main.User.SubmitReport, user.contractId,
                         {
@@ -62,41 +65,46 @@ const MainView: React.FC = () => {
         } catch {
             console.log("error report create");
         }
+        setUpdated(true);
     }
 
-    let check = function (contractId: ContractId<DataManagement.Report.Report>) {
+    let check = async function (contractId: ContractId<DataManagement.Report.Report>) {
         try {
-            ledger.exercise(DataManagement.Report.Report.Check, contractId, {})
-                .catch(e => console.log(`error: reject: ${e} `));
+            await ledger.exercise(DataManagement.Report.Report.Check, contractId, {})
+                .catch(e => console.log(`error: check: ${e} `));
+            setUpdated(true);
         } catch {
             console.log("error: check")
         }
     }
 
-    let reject = function (contractId: ContractId<DataManagement.Report.Report>) {
+    let reject = async function (contractId: ContractId<DataManagement.Report.Report>) {
         try {
-            ledger.exercise(DataManagement.Report.Report.Reject, contractId, {})
+            await ledger.exercise(DataManagement.Report.Report.Reject, contractId, {})
                 .catch(e => console.log(`error: reject: ${e} `));
+            setUpdated(true);
         } catch {
             console.log("error: reject");
         }
     }
 
-    let requestQuota = function (contractId: ContractId<DataManagement.Report.Publication>) {
+    let requestQuota = async function (contractId: ContractId<DataManagement.Report.Publication>) {
         try {
-            ledger.exercise(DataManagement.Report.Publication.RequestQuota, contractId, { requestor: username })
+            await ledger.exercise(DataManagement.Report.Publication.RequestQuota, contractId, { requestor: username })
                 .catch(e => console.log(`error: request: ${e}`));
+            setUpdated(true);
         } catch {
             console.log("error: quota request");
         }
     }
 
-    let issueQuota = function (contractId: ContractId<FishingQuota.FishingQuota.FishingQuotaRequest>) {
+    let issueQuota = async function (contractId: ContractId<FishingQuota.FishingQuota.FishingQuotaRequest>) {
         if (username == "Commission") {
-            ledger.exercise(FishingQuota.FishingQuota.FishingQuotaRequest.Issue, contractId, {})
+            await ledger.exercise(FishingQuota.FishingQuota.FishingQuotaRequest.Issue, contractId, {})
                 .catch(e => console.log(`error quota issue: ${e}`));
+            setUpdated(true);
         } else {
-
+            
         }
     }
 

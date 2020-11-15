@@ -14,3 +14,7 @@ just rundom stuff yet
 `$ daml start`
 
 `$ cd ui && yarn install && yarn start`
+
+## workflow
+the basic imaginary happy workflow is described here: 
+https://github.com/OdysseyMomentum/DAML/blob/df17f357d982cd830ce25d805669b6afa05ec8e8/daml/Main.daml#L55

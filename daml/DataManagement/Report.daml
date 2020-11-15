@@ -19,8 +19,11 @@ template Report with
  where
    signatory reporter, operator
    controller operator can
-         Check : ContractId Publication do
+         -- the report stays on the ledger 
+         -- the check will only reveal the published data
+         nonconsuming Check : ContractId Publication do
             exerciseByKey @Publication (content.species, operator) AddObserver with obs = reporter
+         -- reject removes the Report, forcing 
          Reject : ContractId Publication do
             exerciseByKey @Publication (content.species, operator) RemoveObserver with obs = reporter 
 

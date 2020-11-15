@@ -1184,9 +1184,9 @@
 "@daml.js/odyssey@file:../daml.js/odyssey-1.0.0":
   version "1.7.0"
   dependencies:
-    "@daml.js/40f452260bef3f29dede136108fc08a88d5a5250310281067087da6f0baddff7" "file:../../../.cache/yarn/v6/npm-@daml-js-odyssey-1.7.0-840c1715-4a98-4b8d-9272-04304ae8c32f-1605406595642/node_modules/@daml.js/40f452260bef3f29dede136108fc08a88d5a5250310281067087da6f0baddff7"
-    "@daml.js/733e38d36a2759688a4b2c4cec69d48e7b55ecc8dedc8067b815926c917a182a" "file:../../../.cache/yarn/v6/npm-@daml-js-odyssey-1.7.0-840c1715-4a98-4b8d-9272-04304ae8c32f-1605406595642/node_modules/@daml.js/733e38d36a2759688a4b2c4cec69d48e7b55ecc8dedc8067b815926c917a182a"
-    "@daml.js/d14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662" "file:../../../.cache/yarn/v6/npm-@daml-js-odyssey-1.7.0-840c1715-4a98-4b8d-9272-04304ae8c32f-1605406595642/node_modules/@daml.js/d14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662"
+    "@daml.js/40f452260bef3f29dede136108fc08a88d5a5250310281067087da6f0baddff7" "file:../../../.cache/yarn/v6/npm-@daml-js-odyssey-1.7.0-3d1df02a-8428-4f08-aeb4-2aed1131d016-1605429312630/node_modules/@daml.js/40f452260bef3f29dede136108fc08a88d5a5250310281067087da6f0baddff7"
+    "@daml.js/733e38d36a2759688a4b2c4cec69d48e7b55ecc8dedc8067b815926c917a182a" "file:../../../.cache/yarn/v6/npm-@daml-js-odyssey-1.7.0-3d1df02a-8428-4f08-aeb4-2aed1131d016-1605429312630/node_modules/@daml.js/733e38d36a2759688a4b2c4cec69d48e7b55ecc8dedc8067b815926c917a182a"
+    "@daml.js/d14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662" "file:../../../.cache/yarn/v6/npm-@daml-js-odyssey-1.7.0-3d1df02a-8428-4f08-aeb4-2aed1131d016-1605429312630/node_modules/@daml.js/d14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662"
     "@daml/ledger" "1.7.0"
     "@daml/types" "1.7.0"
     "@mojotech/json-type-validation" "^3.1.0"
@@ -3258,9 +3258,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001035, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001157:
-  version "1.0.30001157"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001157.tgz#2d11aaeb239b340bc1aa730eca18a37fdb07a9ab"
-  integrity sha512-gOerH9Wz2IRZ2ZPdMfBvyOi3cjaz4O4dgNwPGzx8EhqAs4+2IL/O+fJsbt+znSigujoZG8bVcIAUM/I/E5K3MA==
+  version "1.0.30001158"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001158.tgz#fce86d321369603c2bc855ee0e901a7f49f8310b"
+  integrity sha512-s5loVYY+yKpuVA3HyW8BarzrtJvwHReuzugQXlv1iR3LKSReoFXRm86mT6hT7PEF5RxW+XQZg+6nYjlywYzQ+g==
 
 capture-exit@^2.0.0:
   version "2.0.0"

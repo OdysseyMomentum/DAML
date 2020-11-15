@@ -68,7 +68,7 @@ setup = do
     spain <- allocatePartyWithHint "Spain" (PartyIdHint "Spain")
     portugal <- allocatePartyWithHint "Portugal" (PartyIdHint "Portugal")
     (op1,inv1) <- commission `submit` exerciseCmd op $ Onboard with participant = us ; userName = "USA"
-    us `submit` exerciseCmd inv1 Subscribe
+    usUser <- us `submit` exerciseCmd inv1 Subscribe
     (op2, inv2) <- commission `submit` exerciseCmd op1 $ Onboard with participant = uk ; userName = "UK"
     ukUser <- uk `submit` exerciseCmd inv2 Subscribe
     (op3, inv3) <- commission `submit` exerciseCmd op2 $ Onboard with participant = canada ; userName = "Canada"
@@ -82,7 +82,7 @@ setup = do
     (op7, inv7) <- commission `submit` exerciseCmd op6 $ Onboard with participant = spain ; userName = "Spain"
     spUser <- spain `submit` exerciseCmd inv7 Subscribe
     (op8, inv8) <- commission `submit` exerciseCmd op7 $ Onboard with participant =  portugal ; userName = "Portugal"
-    portugal `submit` exerciseCmd inv8 Subscribe
+    portugalUser <- portugal `submit` exerciseCmd inv8 Subscribe
 
     t <- getTime
     -- submitting fishing reports
@@ -93,10 +93,31 @@ setup = do
                         area = ((Coordinates with lat = 30.0; long = -45.0), 10.0) 
                         timestamp =  time (date 2020 Mar 15) 0 0 0
                         duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
+    brasil `submit` exerciseCmd brasilUser $ SubmitReport with
+                    content = ReportContent with 
+                        species = "ALB"
+                        caughtQty = 41.42566
+                        area = ((Coordinates with lat = 30.0; long = -45.0), 10.0) 
+                        timestamp =  time (date 2020 Mar 15) 0 0 0
+                        duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
+    brasil `submit` exerciseCmd brasilUser $ SubmitReport with
+                    content = ReportContent with 
+                        species = "ALB"
+                        caughtQty = 0.31927
+                        area = ((Coordinates with lat = 25.0; long = -45.0), 10.0) 
+                        timestamp =  time (date 2020 Mar 15) 0 0 0
+                        duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
+    brasil `submit` exerciseCmd brasilUser $ SubmitReport with
+                    content = ReportContent with 
+                        species = "ALB"
+                        caughtQty = 0.95782
+                        area = ((Coordinates with lat = 30.0; long = -50.0), 10.0) 
+                        timestamp =  time (date 2020 Mar 15) 0 0 0
+                        duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
     brReport <- brasil `submit` exerciseCmd brasilUser $ SubmitReport with
                     content = ReportContent with 
                         species = "ALB"
-                        caughtQty = 11.95782
+                        caughtQty = 11.97273
                         area = ((Coordinates with lat = 30.0; long = -50.0), 10.0) 
                         timestamp =  time (date 2020 Jun 3) 0 0 0 
                         duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
@@ -108,6 +129,21 @@ setup = do
                         area = ((Coordinates with lat = 40.0; long = -65.0), 10.0) 
                         timestamp =  time (date 2020 Jun 3) 0 0 0 
                         duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
+     
+    canada `submit` exerciseCmd canUser $ SubmitReport with
+                    content = ReportContent with 
+                        species = "ALB"
+                        caughtQty = 0.39842
+                        area = ((Coordinates with lat = 40.0; long = -55.0), 10.0) 
+                        timestamp =  time (date 2020 Jun 3) 0 0 0 
+                        duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
+    canada `submit` exerciseCmd canUser $ SubmitReport with
+                    content = ReportContent with 
+                        species = "ALB"
+                        caughtQty = 0.55339
+                        area = ((Coordinates with lat = 40.0; long = -65.0), 10.0) 
+                        timestamp =  time (date 2020 Jun 3) 0 0 0 
+                        duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
 
     espReport <- spain `submit` exerciseCmd spUser $ SubmitReport with
                     content = ReportContent with 
@@ -116,7 +152,94 @@ setup = do
                         area = ((Coordinates with lat = 40.0; long = -50.0), 10.0) 
                         timestamp =  time (date 2020 Jun 3) 0 0 0 
                         duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
-                        
+
+    spain `submit` exerciseCmd spUser $ SubmitReport with
+                    content = ReportContent with 
+                        species = "ALB"
+                        caughtQty = 10.68352
+                        area = ((Coordinates with lat = 35.0; long = -45.0), 10.0) 
+                        timestamp =  time (date 2020 Jun 3) 0 0 0 
+                        duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
+    
+    spain `submit` exerciseCmd spUser $ SubmitReport with
+                    content = ReportContent with 
+                        species = "ALB"
+                        caughtQty = 10.01248
+                        area = ((Coordinates with lat = 40.0; long = -50.0), 10.0) 
+                        timestamp =  time (date 2020 Jun 3) 0 0 0 
+                        duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
+    
+    portugal `submit` exerciseCmd portugalUser $ SubmitReport with
+                    content = ReportContent with 
+                        species = "ALB"
+                        caughtQty = 0.02038
+                        area = ((Coordinates with lat = 40.0; long = -40.0), 10.0) 
+                        timestamp =  time (date 2020 Jun 3) 0 0 0 
+                        duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
+    
+    portugal `submit` exerciseCmd portugalUser $ SubmitReport with
+                    content = ReportContent with 
+                        species = "ALB"
+                        caughtQty = 0.051668
+                        area = ((Coordinates with lat = 35.0; long = -50.0), 10.0) 
+                        timestamp =  time (date 2020 Jun 3) 0 0 0 
+                        duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
+
+    portugal `submit` exerciseCmd portugalUser $ SubmitReport with
+                    content = ReportContent with 
+                        species = "ALB"
+                        caughtQty = 0.04
+                        area = ((Coordinates with lat = 35.0; long = -40.0), 10.0) 
+                        timestamp =  time (date 2020 Jun 3) 0 0 0 
+                        duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
+
+    
+    us `submit` exerciseCmd usUser $ SubmitReport with
+                    content = ReportContent with 
+                        species = "ALB"
+                        caughtQty = 3.30908
+                        area = ((Coordinates with lat = 25.0; long = -65.0), 10.0) 
+                        timestamp =  time (date 2020 Jun 3) 0 0 0 
+                        duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
+
+    us `submit` exerciseCmd usUser $ SubmitReport with
+                    content = ReportContent with 
+                        species = "ALB"
+                        caughtQty = 0.07521
+                        area = ((Coordinates with lat = 35.0; long = -70.0), 10.0) 
+                        timestamp =  time (date 2020 Jun 3) 0 0 0 
+                        duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
+    us `submit` exerciseCmd usUser $ SubmitReport with
+                    content = ReportContent with 
+                        species = "ALB"
+                        caughtQty = 0.0564
+                        area = ((Coordinates with lat = 35.0; long = -65.0), 10.0) 
+                        timestamp =  time (date 2020 Jun 3) 0 0 0 
+                        duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
+    us `submit` exerciseCmd usUser $ SubmitReport with
+                    content = ReportContent with 
+                        species = "ALB"
+                        caughtQty = 0.22562
+                        area = ((Coordinates with lat = 30.0; long = -70.0), 10.0) 
+                        timestamp =  time (date 2020 Jun 3) 0 0 0 
+                        duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
+
+    us `submit` exerciseCmd usUser $ SubmitReport with
+                    content = ReportContent with 
+                        species = "ALB"
+                        caughtQty = 3.04586
+                        area = ((Coordinates with lat = 40.0; long = -65.0), 10.0) 
+                        timestamp =  time (date 2020 Jun 3) 0 0 0 
+                        duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
+    
+    us `submit` exerciseCmd usUser $ SubmitReport with
+                    content = ReportContent with 
+                        species = "ALB"
+                        caughtQty = 0.00125
+                        area = ((Coordinates with lat = 20.0; long = -65.0), 10.0) 
+                        timestamp =  time (date 2020 Jun 3) 0 0 0 
+                        duration = convertMicrosecondsToRelTime (14 * microsecondsInDay)
+    
     -- commission prepares a ppublication about fishing opportunities
     pub <- commission `submit` createCmd $ Publication with 
                                         operator = commission 
@@ -127,6 +250,15 @@ setup = do
                                                       species = "ALB"
                                                       timeLimit = time (date 2020 Dec 1) 0 0 0  
 
+    
+    pubB <- commission `submit` createCmd $ Publication with 
+                                        operator = commission 
+                                        observers = []  
+                                        content = PublicationData with 
+                                                      targetArea = ((Coordinates with lat = 30.0; long = -61.0), 10.0)
+                                                      totalAllowance = 100
+                                                      species = "COD"
+                                                      timeLimit = time (date 2020 Dec 1) 0 0 0  
     -- commission accepts report and by that reveals publication for the party 
     commission `submit` exerciseCmd espReport Check
     pub2 <- commission `submit` exerciseCmd brReport Check

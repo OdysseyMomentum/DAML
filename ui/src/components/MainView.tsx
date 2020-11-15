@@ -2,7 +2,7 @@ import { FishingQuota, DataManagement, Main } from '@daml.js/odyssey';
 import { useLedger, useParty, useQuery } from '@daml/react';
 import React, { useState, useEffect } from 'react';
 import * as ui from 'semantic-ui-react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Circle, FeatureGroup } from 'react-leaflet';
 import { LatLngExpression } from 'leaflet';
 import { ReportView, ReportModel, ReportViewModel } from './ReportView';
 import { ReportForm } from './ReportForm';
@@ -134,6 +134,19 @@ const MainView: React.FC = () => {
                             </Popup>
                         </Marker>)
                 })}
+            {publications.map(p => {
+                return(
+                    <FeatureGroup>
+                        <Popup>
+                            Prospective Fishing area for {p.fish}
+                        </Popup>
+                        <Circle
+                           center={[p.areaCenterLat,p.areaCenterLong]}
+                           radius={p.areaRadius * 20000}
+                        />
+                    </FeatureGroup>
+                )
+            } )}
         </MapContainer>);
 
     const panes = [

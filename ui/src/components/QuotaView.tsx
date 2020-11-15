@@ -21,94 +21,59 @@ type Props = {
     requests: QuotaRequestModel[]
     username: string
     issue: (contactId: ContractId<FishingQuotaRequest>) => void
+    deny: (contactId: ContractId<FishingQuotaRequest>) => void
 }
-export const QuotaView: React.FC<Props> = ({ quotas, requests, username, issue }) => {
-    if (username == "Commission") {
-        return (
-            <ui.Container>
-                <ui.Grid columns={2}>
-                    <ui.GridColumn>
-                        {quotas.map(q => {
-                            return (<ui.Segment>
-                                <ui.Card>
-                                    <ui.CardContent>
-                                        <ui.CardHeader>
-                                            Issued to: {q.owner}
-                                        </ui.CardHeader>
-                                    </ui.CardContent>
-                                    <ui.CardContent>
-                                        {q.fish}: {q.qty}
-                                    </ui.CardContent>
-                                </ui.Card>
-                            </ui.Segment>)
-                        })}
-                    </ui.GridColumn>
-                    <ui.GridColumn>
-                        {requests.map(r => {
-                            return (
-                                <ui.Segment>
-                                    <ui.Card>
-                                        <ui.CardContent>
-                                            <ui.CardHeader>
-                                                Requested: {r.requestor}
-                                            </ui.CardHeader>
-                                        </ui.CardContent>
-                                        <ui.CardContent>
-                                            {r.fish}
-                                        </ui.CardContent>
-                                        <ui.CardContent extra>
-                                            <div>
-                                                <ui.Button basic color="green" onClick={() => issue(r.contractId)}>Issue</ui.Button>
-                                            </div>
-                                        </ui.CardContent>
-                                    </ui.Card>
-                                </ui.Segment>
-                            )
-                        })}
-                    </ui.GridColumn>
-                </ui.Grid>
-            </ui.Container>
-        );
-    } else {
-        return (
-            <ui.Container>
-                <ui.Grid columns={2}>
-                    <ui.GridColumn>
-                        {quotas.map(q => {
-                            return (<ui.Segment>
-                                <ui.Card>
-                                    <ui.CardContent>
-                                        <ui.CardHeader>
-                                            Issued to: {q.owner}
-                                        </ui.CardHeader>
-                                    </ui.CardContent>
-                                    <ui.CardContent>
-                                        {q.fish}: {q.qty}
-                                    </ui.CardContent>
-                                </ui.Card>
-                            </ui.Segment>)
-                        })}
-                    </ui.GridColumn>
-                    <ui.GridColumn>
-                        {requests.map(r => {
-                            return (
-                                <ui.Segment>
-                                    <ui.Card>
-                                        <ui.CardContent>
-                                            <ui.CardHeader>
-                                                Requested: {r.requestor}
-                                            </ui.CardHeader>
-                                        </ui.CardContent>
-                                        <ui.CardContent>
-                                            {r.fish}
-                                        </ui.CardContent>
-                                    </ui.Card>
-                                </ui.Segment>
-                            )
-                        })}
-                    </ui.GridColumn>
-                </ui.Grid>
-            </ui.Container>)
 
-    }
+export const QuotaView: React.FC<Props> = ({ quotas, requests, username, issue, deny }) => {
+
+    var extra = (contractId: ContractId<FishingQuotaRequest>) => {return (<ui.CardContent extra></ui.CardContent>) }
+    if (username == "Commission") {
+        extra = (contractId: ContractId<FishingQuotaRequest>) => {return (<ui.CardContent extra>
+            <div className="ui two buttons">
+                <ui.Button basic color="green" onClick={() => issue(contractId)}>Issue</ui.Button>
+                <ui.Button basic color="red" onClick={() => deny(contractId)}>Deny</ui.Button>
+            </div>
+        </ui.CardContent>); }
+    } 
+
+    return (
+        <ui.Container>
+            <ui.Grid columns={2}>
+                <ui.GridColumn>
+                    {quotas.map(q => {
+                        return (<ui.Segment>
+                            <ui.Card>
+                                <ui.CardContent>
+                                    <ui.CardHeader>
+                                        Issued to: {q.owner}
+                                    </ui.CardHeader>
+                                </ui.CardContent>
+                                <ui.CardContent>
+                                    {q.fish}: {q.qty}
+                                </ui.CardContent>
+                            </ui.Card>
+                        </ui.Segment>)
+                    })}
+                </ui.GridColumn>
+                <ui.GridColumn>
+                    {requests.map(r => {
+                        return (
+                            <ui.Segment>
+                                <ui.Card>
+                                    <ui.CardContent>
+                                        <ui.CardHeader>
+                                            Requested: {r.requestor}
+                                        </ui.CardHeader>
+                                    </ui.CardContent>
+                                    <ui.CardContent>
+                                        {r.fish}
+                                    </ui.CardContent>
+                                    {extra(r.contractId)}
+                                </ui.Card>
+                            </ui.Segment>)
+                    })}
+                </ui.GridColumn>
+            </ui.Grid>
+        </ui.Container>
+    );
 }

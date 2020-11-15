@@ -27,10 +27,10 @@ const MainView: React.FC = () => {
 
     let [quotas, setQuotas] = useState<QuotaModel[]>([]);
 
-    let reportQ = useQuery(DataManagement.Report.Report, () => {return  {operator: "Commission"}}, [ledger, update])
-    let pubQ = useQuery(DataManagement.Report.Publication, () => {return  {operator: "Commission"}}, [ledger, update])
-    let quotaRequestQ = useQuery(FishingQuota.FishingQuota.FishingQuotaRequest, () => {return  {operator: "Commission"}}, [ledger, update]);
-    let quotaQ = useQuery(FishingQuota.FishingQuota.FishingQuota, () => {return  {issuer: "Commission"}}, [ledger, update])
+    let reportQ = useQuery(DataManagement.Report.Report, () => { return { operator: "Commission" } }, [ledger, update])
+    let pubQ = useQuery(DataManagement.Report.Publication, () => { return { operator: "Commission" } }, [ledger, update])
+    let quotaRequestQ = useQuery(FishingQuota.FishingQuota.FishingQuotaRequest, () => { return { operator: "Commission" } }, [ledger, update]);
+    let quotaQ = useQuery(FishingQuota.FishingQuota.FishingQuota, () => { return { issuer: "Commission" } }, [ledger, update])
 
     useEffect(() => {
         setReports(reportQ.contracts.map(x => reportModelFromReport(x.contractId, x.payload)));
@@ -104,7 +104,17 @@ const MainView: React.FC = () => {
                 .catch(e => console.log(`error quota issue: ${e}`));
             setUpdated(true);
         } else {
-            
+
+        }
+    }
+
+    let denyQuota = async function (contractId: ContractId<FishingQuota.FishingQuota.FishingQuotaRequest>) {
+        if (username == "Commission") {
+            await ledger.exercise(FishingQuota.FishingQuota.FishingQuotaRequest.Deny, contractId, {})
+                .catch(e => console.log(`error quota issue: ${e}`));
+            setUpdated(true);
+        } else {
+
         }
     }
 
@@ -135,30 +145,37 @@ const MainView: React.FC = () => {
                         </Marker>)
                 })}
             {publications.map(p => {
-                return(
+                return (
                     <FeatureGroup>
                         <Popup>
                             Prospective Fishing area for {p.fish}
                         </Popup>
                         <Circle
-                           center={[p.areaCenterLat,p.areaCenterLong]}
-                           radius={p.areaRadius * 20000}
+                            center={[p.areaCenterLat, p.areaCenterLong]}
+                            radius={p.areaRadius * 20000}
                         />
                     </FeatureGroup>
                 )
-            } )}
+            })}
         </MapContainer>);
 
     const panes = [
-        { menuItem: 'Map View', pane: (<Tab.Pane key="map"><div>{mapView}</div></Tab.Pane>) },
+        { menuItem: 'Map View', pane: <Tab.Pane key="map"><div>{mapView}</div></Tab.Pane> },
         { menuItem: 'Reports', pane: <Tab.Pane key="report"><div>{view}</div></Tab.Pane> },
         {
-            menuItem: 'Publications', pane: <Tab.Pane key="pub"><div>
-                {publications.map(p => <PublicationView publication={p} username={username} request={requestQuota} />)}
-            </div>
+            menuItem: 'Publications', pane: <Tab.Pane key="pub">
+                <div>
+                    {publications.map(p => <PublicationView publication={p} username={username} request={requestQuota} />)}
+                </div>
             </Tab.Pane>
         },
-        { menuItem: 'Quotas', pane: <Tab.Pane key="q"><div><QuotaView quotas={quotas} requests={quotaRequests} username={username} issue={issueQuota} /></div></Tab.Pane> },
+        {
+            menuItem: 'Quotas', pane: <Tab.Pane key="q">
+                <div>
+                    <QuotaView quotas={quotas} requests={quotaRequests} username={username} issue={issueQuota} deny={denyQuota} />
+                </div>
+            </Tab.Pane>
+        },
     ]
 
     return (
